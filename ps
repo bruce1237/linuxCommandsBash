@@ -1,0 +1,101 @@
+ps:
+CMD: ps
+show the process running at current terminal
+
+output:
+  PID TTY          TIME CMD
+  26804 pts/0    00:00:00 bash
+  28750 pts/0    00:00:00 ps
+
+PID: processID
+TTY: terminal which process running inside
+TIME: how much time the cpu process the command
+ 
+
+
+CMD: ps -aux / aux <just different style>
+    -aux: To see every process on the system using BSD syntax, shows the userName instead of userID
+
+output:
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1 166952 12120 ?        Ss   Aug15   0:07 /sbin/init splash
+root           2  0.0  0.0      0     0 ?        S    Aug15   0:00 [kthreadd]
+root           3  0.0  0.0      0     0 ?        I<   Aug15   0:00 [rcu_gp]
+root           4  0.0  0.0      0     0 ?        I<   Aug15   0:00 [rcu_par_gp]
+
+
+CMD: ps -x
+    -x: show all the process running at the server, 
+output:
+  PID TTY      STAT   TIME COMMAND
+   2052 ?        Ss     0:01 /lib/systemd/systemd --user
+   2053 ?        S      0:00 (sd-pam)
+   2059 ?        S<sl   0:00 /usr/bin/pipewire
+   2060 ?        Ssl    0:00 /usr/bin/pipewire-media-session
+   2162 tty2     Ssl+   0:00 /usr/libexec/gdm-x-session --run-script 
+   28968 pts/1    R+     0:00 ps x
+   29225 pts/1    T      0:00 tail -f /var/log/alternatives.log /var/l   
+
+TTY: 
+    show the which terminal is running the command, ? means the process start by the system
+
+STAT:
+    s: 
+        lowercase s means the process is process leader or group process
+    
+    S: 
+        capital S means the process is running in uninterruptible sleep which essentially means that it's waiting for some sort of user input, can not be interrupted until it receives that.
+
+    R: 
+        capital R means it currently running.
+    T: 
+        capital T means the process has been stopped, something like Ctrl+z to put the process into background
+
+CMD: ps -He
+
+output:
+    PID TTY          TIME CMD
+      2 ?        00:00:00 kthreadd
+      3 ?        00:00:00   rcu_gp
+      4 ?        00:00:00   rcu_par_gp
+      5 ?        00:00:00   netns
+      7 ?        00:00:00   kworker/0:0H-events_highpri
+     10 ?        00:00:00   mm_percpu_wq
+   1093 ?        00:00:00   sshd
+  12175 ?        00:00:00     sshd
+  12212 ?        00:00:00       sshd
+  12213 ?        00:00:00         bash
+  12257 ?        00:00:00           sh
+  12267 ?        00:02:32             node
+  12304 ?        00:02:07               node
+  27549 pts/1    00:00:00                 bash
+  29479 pts/1    00:00:00                   ps
+  26557 ?        00:00:19               node
+
+show process in a hierarchy relation 
+    -H: format the process into hierarchy
+    -e: list all the process running on the system regardless terminal
+
+
+CMD: ps -axjf 
+similar to the -He, but add aided line to help reading the hierarchy.
+
+output:
+   PPID     PID    PGID     SID TTY        TPGID STAT   UID   TIME COMMAND
+      0       2       0       0 ?             -1 S        0   0:00 [kthreadd]
+      2       3       0       0 ?             -1 I<       0   0:00  \_ [rcu_gp]
+      2       4       0       0 ?             -1 I<       0   0:00  \_ [rcu_par_gp]
+      2       5       0       0 ?             -1 I<       0   0:00  \_ [netns]
+      2       7       0       0 ?             -1 I<       0   0:00  \_ [kworker/0:0H-events_highpr i]
+
+PPID:
+    parent process ID
+PGID:
+    parent group ID
+PSID:
+    session ID, usually the same as the process that started the chain
+TPGID:
+    terminal session id which the process is associated, if there isn't a terminal that associated with the process, then a negative one (-1) will be displayed
+UID:
+    the user id who started the process, 0 will be root.
+
