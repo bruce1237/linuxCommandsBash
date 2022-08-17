@@ -1,0 +1,14 @@
+stdin 0
+stdout 1  default
+stderr 2
+
+/dev/null is the black hole
+
+
+CMD: find /etc -type f 1> ~/stdoutResult.txt 2> ~/stderrResult.txt
+separate output by stdout:1 and stderr:2, and send to different files
+
+
+CMD: echo $?
+    $?: give the last command process status: 0 success or errorCode
+    
