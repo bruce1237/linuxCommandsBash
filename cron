@@ -1,0 +1,39 @@
+scheduling tasks
+
+list all the cron jobs
+CMD:	crontab -l
+
+edit cron
+CMD:	crontab -e
+	-e: editing
+
+set cron for specified user
+CMD:	crontabl -u userName -e
+
+
+crontab file:
+-----------------------------------------
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+5 9 15 8 5 echo "hello world"
+
+#means: echo command will run on the 15th of Auguest on 9:05 if the day is Friday
+
+	m: every 5(int) minute(0-59)
+	h: every 9(int) hour(0-23)
+	dom: every day of month(1-30)
+	mon: numer of month(1-12)	
+	dow: day of week(1-7)
+	*: means every
+
+@hourly echo "hello hourly"
+
+	@hourly: run every hour
+	@daily, @monthly......
+	@reboot: run everything reboot
+
