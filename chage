@@ -1,0 +1,21 @@
+chage
+
+set expiry date for user
+CMD:    chage -E expiryDate(dateString:2022-10-10) UserName
+        -E: set the expiry date for user
+
+check expiry date for user
+CMD:    chage -l userName        
+        -l: check the expiry for user
+
+set up days for the user password to expiry
+CMD:    chage -M numberOfDays(int) userName
+        numberOfDays: set to -1 means never
+
+set minimum days to change the password, can't change password again within the numberOfDays
+CMD:    chage -m numberOfDays(int) userName
+        -m: after change password, need to wait numberOfDays to change again
+
+to lock user account
+CMD:    passwd -l userName
+
