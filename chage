@@ -16,6 +16,9 @@ set minimum days to change the password, can't change password again within the 
 CMD:    chage -m numberOfDays(int) userName
         -m: after change password, need to wait numberOfDays to change again
 
-to lock user account
+lock user account
 CMD:    passwd -l userName
+
+unlock user account
+CMD:    passwd -u userName
 
