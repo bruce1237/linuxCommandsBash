@@ -1,0 +1,64 @@
+add user to the system
+CMD:    useradd UserName
+        -m: add user home directory
+
+
+delete user
+CMD:    userdel UserName
+        -r: remove the user and its home directory
+
+add/change password to user
+CMD:    passwd
+without option, this command will change the password for the current user
+
+add/change password for other user
+CMD:    passwd UserName
+
+add system user
+CMD:    useradd -r userName
+        -r: add the user as system user
+
+
+
+to check users by looking folders in the /home directory
+
+to check all the users in the system, by looking the /etc/passwd file
+CMD:    cat /etc/passwd
+output:
+    redis:x:129:137::/var/lib/redis:/usr/sbin/nologin
+    sshd:x:130:65534::/run/sshd:/usr/sbin/nologin
+    mysql:x:131:139:MySQL Server,,,:/nonexistent:/bin/false
+    foxmulder:x:1001:1001::/home/foxmulder:/bin/sh
+
+format:
+    userName:x:userID:groupID:userInformationFiled:home/directory/path:shell
+
+    x: represent hashed password
+    userID: lower than 1000 consider to be system account
+    userInformationField: normally first last name
+    home/directory/path: the path to the user home direcotry
+    shell: shell for the user to use once logged in
+
+    /usr/sbin/nollgin: mean the user can not login
+
+how to check the hassed passwd?
+CMD:   cat /etc/shadow
+output: 
+        sshd:*:19165:0:99999:7:::
+        mysql:!:19195:0:99999:7:::
+        foxmuler:!:19222::::::
+        sysuser:!:19222::::::
+        bo:$y$j9T$Mu/z11A5xDacIJuUXeGGx/$jhu2Ia4jZyqDtFd2tdih.I9uE/7GZA6N/wDZUex3nz1:19150:0:99999:7:::
+
+format:
+    userName:passwordHash:daysLastChange:daysPassToChange:daysToChange:daysToRemindChange:daysToLock:daysToDisable
+
+    daysLastChange(int): number of days since unix epoch(1970-01-01) that the password was lastChanged
+    daysPassToChange(int): number of days left before can change password
+                            0: means change at anytime
+    daysToChange(int): number of days left to change the password
+    daysToRemindChange(int): number of days left to remind user to change password,
+                            once the passwd expiry date is less than the reminder days,
+                            after login will shows a reminder
+    daysToLock(int): numbers of days left before the user been locked
+    daysToDisable(int): number os days left before the user been disabled
