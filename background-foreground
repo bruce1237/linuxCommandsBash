@@ -1,0 +1,13 @@
+Background-foreground
+
+to check the background running process
+CMD: 	jobs
+
+bring background job into foreground
+CMD: fg jobID(int)
+
+
+
+put & in the end of command will run the command in the back ground
+
+

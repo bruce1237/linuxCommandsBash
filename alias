@@ -1,0 +1,14 @@
+alias
+
+create alias
+CMD: 	alias aliasName='alian command groups'
+
+remove alias
+CMD:	unalias aliasName
+
+check alias
+CMD:	alias aliasName
+
+
+
+

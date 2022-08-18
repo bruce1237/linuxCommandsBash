@@ -1,0 +1,6 @@
+ssh
+
+copy ssh public key to server
+CMD:	ssh-copy-id userName@server.ip.address
+
+
