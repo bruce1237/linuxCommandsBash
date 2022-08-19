@@ -1,0 +1,59 @@
+list all the disk has been plugged
+CMD:	lsblk
+
+
+list all the mounted storage devices
+CMD:	mount
+
+
+format disk
+CMD:	fdisk pathToDisk
+	
+	Help:
+	  GPT
+	  M   enter protective/hybrid MBR
+
+	  Generic
+	   d   delete a partition
+	   F   list free unpartitioned space
+	   l   list known partition types
+	   n   add a new partition
+	   p   print the partition table
+	   t   change a partition type
+	   v   verify the partition table
+	   i   print information about a partition
+
+	  Misc
+	   m   print this menu
+	   x   extra functionality (experts only)
+
+	  Script
+	   I   load disk layout from sfdisk script file
+	   O   dump disk layout to sfdisk script file
+	
+	  Save & Exit
+	   w   write table to disk and exit
+	   q   quit without saving changes
+	
+	  Create a new label
+	   g   create a new empty GPT partition table
+	   G   create a new empty SGI (IRIX) partition table
+	   o   create a new empty DOS partition table
+	   s   create a new empty Sun partition table
+
+
+format partition:
+CMD:	mkfs.fileSystemType diskPath
+e.g.:	mkfs.ext4 /dev/sdb
+	fileSystemType:
+		exfat: windows
+		ext4: linux
+
+
+mount a drive:
+CMD:	mount /driveNeedToMount /whereToMount
+
+
+
+check disk usage:
+app:	ncdu
