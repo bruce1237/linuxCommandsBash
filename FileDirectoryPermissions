@@ -15,9 +15,9 @@ drwxr-xr-x  2 root  root    4096 Jul 27 22:31 xml
 -rw-r--r--  1 root  root     460 Dec  8  2021 zsh_command_not_found
 
 example:
-	l	rwx rwx rwx	1	root	root	23	Jun  7 10:48 vtrgb -> /etc/file
+	l	rwx rwx rwx	1		root	root	23	Jun  7 10:48 vtrgb -> /etc/file
 explain:
-	type	Access			user 	group	size
+	type	Access		hardlinks	user 	group	size	lastModifyDate	fileName->link
 group1: lrwxrwxrwx
 
 	l:

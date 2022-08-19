@@ -1,0 +1,44 @@
+groups 
+
+show all the groups of current user in
+CMD:	groups
+
+show groups of one user in
+CMD:	groups userName
+
+files for group
+path:	/etc/group
+
+file content:
+	=================
+	docker:x:999:bo	
+	rdma:x:138:
+	mysql:x:139:
+	foxmuler:x:998:
+	sysuser:x:997:
+	---------------
+	groupName:groupPasswdHashed:groupID:groupMembers
+	NOTE: groupPasswd has been diprated
+
+
+create group
+CMD:	groupadd groupName
+
+remove group
+CMD:	groupdel groupName
+
+add user to group
+
+using usermod
+CMD:	usermod -aG groupName UserNameToAddTo 
+	-a: add
+	-G: supplementary group
+	-g: primary group
+
+
+using gpasswd
+CMD:	gpasswd -a userName groupName
+
+remove user from group
+
+CMD:	gpasswd -d userName groupName
