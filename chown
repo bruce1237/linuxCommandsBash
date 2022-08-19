@@ -1,0 +1,6 @@
+chown
+change ownship of file/folder
+
+CMD:	chown -R userName:groupName file/directory
+	
+change the file/directory to be ownd by userName and GroupName 

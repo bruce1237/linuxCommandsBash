@@ -1,0 +1,33 @@
+chmod
+change permission for file & folder
+
+CMD:	chmod goupNameOperatorPermission file/folder
+e.g.:	chmod g+x fileName
+	
+	groupName:
+	u: user
+	g: group
+	o: other
+
+	operator:
+	+: add
+	-: remove
+
+	permission:
+	r: (4) read 
+	w: (2) wirte
+	x: (1) execute for file, access for folder
+
+
+CMD:	chmod permission(int) -Option file/folder
+e.g.:	chmod 777 -R fileName
+	777: 
+		first for user
+		second for group
+		thrid for other
+
+	-R: recursive for files inside the directory includeing the directory
+	*: wildcard for files inside directory
+
+
+

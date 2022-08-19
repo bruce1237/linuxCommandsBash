@@ -1,0 +1,34 @@
+details of ls -l 
+
+output:
+ls -l
+=================================================================================
+lrwxrwxrwx  1 root  root      23 Jun  7 10:48 vtrgb -> /etc/alternatives/vtrgb
+drwxr-xr-x  5 root  root    4096 Apr 19 11:03 vulkan
+-rw-r--r--  1 root  root    4942 Jan 24  2022 wgetrc
+-rw-r--r--  1 root  root      30 Jun 13 10:30 whoopsie
+drwxr-xr-x  2 root  root    4096 Jun 23 00:04 wpa_supplicant
+drwxr-xr-x 12 root  root    4096 Apr 19 11:05 X11
+-rw-r--r--  1 root  root     681 Mar 23 09:41 xattr.conf
+drwxr-xr-x  6 root  root    4096 Apr 19 11:03 xdg
+drwxr-xr-x  2 root  root    4096 Jul 27 22:31 xml
+-rw-r--r--  1 root  root     460 Dec  8  2021 zsh_command_not_found
+
+example:
+	l	rwx rwx rwx	1	root	root	23	Jun  7 10:48 vtrgb -> /etc/file
+explain:
+	type	Access			user 	group	size
+group1: lrwxrwxrwx
+
+	l:
+		first part is the single to indicate the type:
+			d: directory
+			-: file
+			l: link (soft/hard)
+	rwx rwx rwx
+		then break down to 3char groups: for user group and other
+			r: read
+			w: write
+			x: execute for file, allow access for directory
+
+ 
