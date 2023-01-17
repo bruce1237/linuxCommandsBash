@@ -190,3 +190,22 @@ function greet(){
 
 greet "Bo" "99"  # calling func with position params
 ```
+
+# string replace 
+
+```bash
+branch=a/b-c.d@e$f%g!h-i_j+k=m
+echo ${branch}
+# will not replace alph-numeric and - _ . 
+# convert rest to -
+stra=${branch//[^[:alnum:]-_.]/-}
+
+echo ${stra}
+```
+
+
+## sed replace
+```bash
+# replace / _ . to -
+$(echo ${var} | sed -e 's/[/_.]/-/g)
+```
