@@ -484,3 +484,474 @@ command_test $cmd; echo $? # 1
 
  ## `<<`
  redirection used in a here document
+
+ ## `<<<` redirection used in a here string
+
+ ## `<,>` ASCII comparison
+ ```bash
+ veg1=carrots
+ veg2=tomatoes
+
+ if [[ "$veg1" < "$veg2" ]]
+ then
+    echo "Although $veg1 precede $veg2 in the dictionary,"
+    echo -n "this does not necessarily imply anything "
+    echo "about my culinary preferences."
+else
+    echo "what kind of dictionary are you using, anyhow?"
+fi
+```
+
+## `\<, \>` word boundary in a regular expression
+` grep '\<the\>' textfile`
+
+## `|` pipe
+passes the output (stdout) of a previous command to the input(stdin)_ of the next one, or to the shell. this is a method of chining commands together.
+```bash
+echo ls - l | sh
+# passes the output of "echo ls -l" to the shell.
+#  with the same result as a simple "ls -l"
+
+cat *.lst | sort | uniq
+# merges and sorts all ".lst" files, then deletes duplicate lines.
+```
+>A pipe, as a classic method of interprocess communication, sends the stdout of one process ot the stdin of another. in a typical case, a command, such as cat or echo, pipes a stream of data to a filter, a command that transforms int input for processing.
+> ` cat $filename1 $filename2 | grep $search_word `
+>for an interesting note on the complexity of using UNIX pipes
+the output of a command or commands may be piped to a script
+```bash
+#!/bin/bash
+#  uppercase.sh: changes in put to uppercaser.
+tr 'a-z' 'A-Z'
+# letter ranges must be quoted
+to prevent filename generation from single-letter filename
+exit 0
+```
+now let us pipe the output of "ls -l" to this script
+```
+root@4986848167d7:/codes/linuxCommands/shell-scripting# ls -l| ./uppercase.sh 
+TOTAL 32
+-RW-R--R-- 1 ROOT ROOT 15356 FEB 16 10:30 ADVANCED_BASH_SCRIPTING_GUIDE.MD
+-RW-R--R-- 1 ROOT ROOT    50 FEB 15 09:55 MYSCRIPT.SH
+-RW-R--R-- 1 ROOT ROOT  3819 FEB 15 09:55 README.MD
+-RWXR-XR-X 1 ROOT ROOT   276 FEB 16 10:29 TEST.SH
+-RWXR-XR-X 1 ROOT ROOT    15 FEB 16 10:44 UPPERCASE.SH
+```
+
+the stdout of each process in a pipe must be read aas the stdin of the next. if this is not the case, hte data stream will block, and the pipe will not behave as expected.
+
+A pipe runs as a child process, and therefore cannot alter script variables
+```bash
+variable='initial_value"
+echo "new_value" | read variable
+echo "variable = $variable" # variable= initial_value
+```
+if one of the commands in the pipe aborts, this prematurely terminates execution of the pipe. called a a broken pipe. this condition send a SIGPIPE signal.
+
+## `>|` force redirection (even if the noclobber option is set)
+this will forcibly overwrite an existing file
+
+## `||` OR logical operator 
+in a test construct, the || operator causes a return of 0(success) if either of the linked rtest conditions is true
+
+## `&` run job in background
+a command followed by an & will run in the background
+```bash
+sleep 10 &
+[1] 850
+[1]+  Done                    sleep 10
+```
+within a script, commands and even loops may run in the background
+
+> example 3-3 running a loop in the background
+```bash
+#!/bin/bash
+# background-llp.sh
+for i in 1 2 3 4 5  6 7 8 9 10   # first loop
+do 
+    echo -n "$i "
+done & # run this loop in background will sometimes execute after second loop.
+
+echo # this 'echo' somtime will not display.
+
+for i in 11 12 13 14 15 16 17 18 19 20  # second loop
+do 
+    echo -n "$i"
+done
+
+echo # this 'echo' sometime will not display
+
+# ======================================================
+
+# The expected output from the script:
+# 1 2 3 4 5 6 7 8 9 10 
+# 11 12 13 14 15 16 17 18 19 20 
+
+# Sometimes, though, you get:
+# 11 12 13 14 15 16 17 18 19 20 
+# 1 2 3 4 5 6 7 8 9 10 bozo $
+# (The second 'echo' doesn't execute. Why?)
+
+# Occasionally also:
+# 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+# (The first 'echo' doesn't execute. Why?)
+
+# Very rarely something like:
+# 11 12 13 1 2 3 4 5 6 7 8 9 10 14 15 16 17 18 19 20 
+# The foreground loop preempts the background one.
+
+exit 0
+
+#  Nasimuddin Ansari suggests adding    sleep 1
+#+ after the   echo -n "$i"   in lines 6 and 14,
+#+ for some real fun.
+```
+> A command run in the background within a script may cause the script to hang, waiting for a keystroke. fortunately, there is a remedy for this. just put `wait` after `&`
+
+## `-` option, prefix
+option flag for a command or filter. prefix for a default parameter in parameter substitution.
+
+`COMMAND -[Option1][Option2][...]`
+
+`ls -l`
+
+`sort -dfu $filename`
+
+```bash
+if [ $file1 -ot $file2 ]
+then
+    echo "file $file1 is older then $file2. "
+fi
+
+if [ "$a" -eq "$b" ]
+then
+    echo "$a is equal to $b."
+fi
+
+if [ "$c" -eq 24 -a "$d" -eq 47 ]
+then
+    echo "$c equals 24 and $d equals 47."
+fi
+
+param2=${param1:-$DEFAULTVAL}
+```
+
+## `--` the double-dash --prefix long(verbatim) options to commands
+`sort --ignore-leading-blanks`
+used with a bash builtin, it means the end of options to that particular command.
+>this provides a handy means of removing files whose names begin with a dash
+```bash
+ls -l
+-rw-r--r-- 1 bozo bozo 0 Nov 25 12:29 -badname
+
+rm -- -badname
+
+ls -l
+total 0
+```
+the double-dash is also used in conjunction with set
+`set -- $variable`
+>example 15-18 reassigning the positional parameters
+```bash
+#!/bin/bash
+variable="one two three four five"
+
+set -- $variable
+#  set positional parameters to the contests of "$variable"
+
+first_param=$1
+second_param=$2
+shift; shift   # shift past first two positional params, `shift 2` also works
+remaining_params="$*"
+
+echo 
+echo "first parameter = $first_param"  # one
+echo "second parameter = $second_param" # two
+echo "remaining paramters = $remaining_params" # three four five
+
+echo; echo
+
+# again
+set -- $variable
+first_param=$1
+second_param=$2
+echo "first parameter = $first_param" # one
+echo "second parameter = $second_param" # tow
+
+# ===================================================
+set --
+#  unsets positional parameters if no variable specified
+first_param=$1
+second_param=$2
+echo "first parameter = $first_param"
+echo "second parameter = $second_param"
+
+exit 0
+```
+
+## `-` redirection from/to stdin or stdout [dash]
+```bash
+cat - 
+abc
+abc
+...
+Ctl-D
+```
+
+as expected, cat - echoes stdin, in this case keyboarded user input to stdout but does I/O redirection using - have real-world applications?
+```bash
+(cd /source/directory && tar cf - . ) | (cd /dest/directory && tar xpvf -)
+# move entire file three from one directory to another
+
+# 1) cd /source/directory 
+#     source directory, where the files to be moved are.
+# 2) &&
+#     "and-list" : if the 'cd' operation successfull, 
+#      then execute the next command
+# 3) tar cf - .
+#     the 'c' option 'tar' archiving command creates a new archive, 
+#     the 'f' (file) option, followed by '-' designates the target file as stdout, 
+#     and do it in current directory tree('.')
+# 4) |
+#     piped to ...
+# 5) (...)
+#     a subshell
+# 6) cd /dest/directory
+#     change to the destination directory
+# 7) &&
+#     "and-list" as above
+# 8) tar xpvf -
+#     unarchive('x'), preserve ownership and file permission ('p').
+#     and send verbose messages to stdout ('v')
+#     reading data from stdin ('f' followed by '-' ).
+    
+#     NOTE that 'x' is a command, and 'p', 'v' 'f' are options.
+
+
+# more elegant than, but equivalent to :
+
+# cd cource/directory
+# tar cf - . | (cd ../dest/directory; tar xpvf -)
+
+# also having same effect:
+# cp -a / source/directory/* /dest/directory
+#     or:
+# cp -a /source/directory/* /source/directory/.[^.]* /dest/directory
+#     if there are hidden file in /source/directory.    
+```
+>note that in this context the '-' is not itsef a bash operator, but rather an option recognized by certain UNIX utilities that write to stdout, such as tar cat etc
+
+` echo "whatever" | cat -`
+
+where a filename is expected, - redirects output to stdout(sometimes seen with tar cf) or accepts input from stdin, rather than from a file. this is a method of using a file-orented utility as a filter in a pipe.
+
+and a '-' for a more useful result. this causes the shell to await user input.
+```shell
+
+bash$ file -
+abc
+standard input:              ASCII text
+
+
+
+bash$ file -
+#!/bin/bash
+standard input:              Bourne-Again shell script text executable
+```
+now the command acccepts in put from stdin and analyzes it.
+
+the '-' can be used to pipe stdout to other commands this permits such stunts as prepending lines to a file.
+
+using `diff` to compare a file with a section of another:
+`grep linux file1 | diff file 2 -`
+the above command grep all the lines which contain 'linux',
+then pipe to `diff` command to do a compare against file2
+
+> example 3-4 backup of all files changed in last day
+```bash
+#!/bin/bash
+# backs up all files in current directory modified within in last 24 hours
+# in a tarball (tarred and gizpped file).
+
+BACKUPFILE=backup-$(date +%m-$d-%Y)
+# embeds date in backup filename
+archieve=${1:-$BACKUPFILE}
+# if no backup-archive filename specified on command-line,
+# it will default to 'backup-MM-DD-YYYY.tar.gz."
+
+tar cvf - `find . -mtime -l -type f -print ` > $archive.tar
+gzip $archive.tar
+echo "directory $PWD backed up in archive file \"$archive.tar.gz\"."
+
+
+# stephane chazelas points out that the above code will fail
+# if there are too man files found 
+# or if any filename contain blank characters.
+# following alternatives
+# ---------------------------------------------------------------
+# find . mtime -l -type f -print0 | xargs -0 tar rvf "$archive.tar"
+# using the GUN version of find 
+
+# find . -mtime -l -type f -exec tar rvf "$archive.tar" '{}' \;
+# portable to other unix flavors, but much slower.
+
+exit 0
+```
+filename beginning with '-' may cause problems when coupled with the '-' redirection operator. a script should check for this and add an appropriate prefix to such filenames. for example ./-FILENAME, $PWD/-
+
+FILENAME, OR $PATHNAME/-FILENAME
+
+if the value of a variable begins with a `-`, this may likewise create problems
+```bash
+var='-n'
+echo $var
+# has the effect of "echo -n", and outputs nothing
+```
+
+## `-` previous working directory. a cd - command changes to the previous working directory tis 
+do not confuse the '-' used in this sense with the '-' redirection operator just discussed. the interpretation of the '-' depends on the context int which it appears.
+
+## `-` Minus
+
+## `=` Equals
+assignment operator
+
+## `+` Plus
+addition arithmetic operator
+
+## `+` option
+option flag for a command or filter, certain commands and builtins
+uses the + to enable certain options and the - to disable them. 
+in parameter substitution, the + prefixes an alternate value that a variable expands to
+
+## `%` modulo
+modulo remainder of a division, arithmetic operation
+```bash
+let "z=5%3"
+echo $z # 2
+```
+in a different context, the % is a pattern matching operator
+
+## `~` home directory [tilde]
+the corresponds to the $HOME internal variable. -bozo is bozo's home directory, and `ls ~bozo` list the contents of it. `~/` is the current user's home directory, and `ls ~` lists the contents of it.
+
+
+## `~+` current working directory
+this corresponds to the $PWD internal variable
+
+## `~-` previous working directory. 
+this corresponds to the $OLDPWD internal variable
+
+## `=~` regular expression match. 
+this operator was introduced with version 3 of bash
+
+## `^, ^^` Uppercase conversion in parameter substitution 
+(added in version 4 of bash)
+
+---
+# Control Characters
+change the behavior of the terminal or text display. a control character is a control + key combination. a control character may also be written in octal or hexadecimal notation. following an escape
+>Control characters are not normally useful inside a script
+
+## `Ctl-A`
+Moves cursor to beginning of the line of text
+
+## `Ctl-B`
+backspace(nonedestructive)
+
+## `Ctl-C`
+break. terminate a foreground job
+
+## `Ctl-D`
+log out from a shell similar to exit
+**EOF** (end-of-file). this also terminates input from stdin
+when typing text on the console or in an xterm window. Ctl-D erases the character under the cursor when there are no characters present, Ctl-D logs out of the session. as expected. in an xterm window, this has the effect of closing the window.
+
+## `Ctl-E`
+Move cursor to end of line of text( on the command-line)
+
+## `Ctl-F` 
+move to next character (command-line)
+
+## `Ctl-G` ring a BEL
+
+## `Ctl-H`
+Rubout (destructive backspace) erases characters the cursor back over while backspacing
+```bash
+#!/bin/bash
+# embedding Ctl-H in a string
+a="^H^H"  # two Ctl-H's -- backspaces
+          # Ctl-V Ctl-H, using vi;/vmi
+
+echo "abcdef"
+echo
+echo -n "abcdef$a " # abcd f 
+# space at the   ^        ^  backspace twice
+echo
+echo -n "abcdef$a"  # abcdef
+# no space at the end,      ^ doesn't backspace (why?)
+echo; echo
+
+# a=$'\010\010'
+# a=$'\b\b'
+# a=$'\x08\x08'
+# but this does not change the results
+
+# now, try this
+rubout="^H^H^H^H^H"   # 5 x Ctl-H
+echo -n "12345678"
+sleep 2
+echo -n "$rubout"
+sleep2
+```
+
+## `Ctl-I` Horizontal tab
+
+
+## `Ctl-J` Newline (line feed)
+in a script, may also be expressed in octal notation --'\012' or in hexadecimal --'\x0a'
+
+
+## `Ctl-K` Vertical tab
+when typing text on the console or in an xterm window, Ctl-k erases from the characters under the cursor to end of line. within a script, Ctl-K may behave differently.
+
+## `Ctl-L` Carriage return
+
+## `Ctl-N` Erases a line of text recalled from history buffer
+
+## `Ctl-O` issues a newline
+
+## `Ctl-P` Recalls last command from history buffer
+
+
+## `Ctl-Q` resume (XON)
+this resumes stdin in a terminal
+
+## `Ctl-R`
+backwards search for text in history buffer (command-line)
+
+## `Ctl-S` Suspend (xOFF)
+this freezes stdin in a terminal. use Ctl-Q to restore input
+
+## `Ctl-T` erase a line of input, from the cursor backward to beginning of line.
+in some settings, Ctl-U erases t he entire line of input, regardless of cursor position
+
+## `Ctl-V` 
+when inputting text, Ctl-V permits inserting control characters. 
+
+## `Ctl-W` 
+when typing text on hte console or in xterm window, Ctol-w erases formt eh character under the cursor backwards to the first instance of whitespace. in some settings, Ctl-W erases backwards to first non-alphanumeric character.
+
+## `Ctl-X`
+in certain word processing programs, cuts highlighted text and copies to clipboard
+
+## `Ctl-Y`
+pastes back text
+
+## `Ctl-Z`
+pauses a foreground job, substitute operation in certain word processing applicatons
+
+
+## Whitespace
+functions as a separator between commands and /or variables
+
