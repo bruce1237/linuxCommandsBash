@@ -1,0 +1,9 @@
+# Create the user 'bo' and set up a home directory
+sudo adduser bo
+
+# Add the user 'bo' to the sudo group
+sudo usermod -aG sudo bo
+
+# Switch to the new user 'bo' and verify sudo access
+su - bo
+sudo -v
