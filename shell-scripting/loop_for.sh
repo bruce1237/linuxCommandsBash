@@ -22,13 +22,15 @@ echo "Total Size" $totalSize
 # for through array
 cities=(london chelmsford "new york")
 
-for ((i=0; i<${#cities}; i++));
+echo ${#cities}
+
+for ((i=0; i<${#cities[@]}; i++));
 do
-    echo ${cities[$i]}
+    echo "++++" ${cities[$i]}
 done
 
-for city in $cities
+for city in ${cities[*]}
 do
-    echo $city
+    echo "----" $city
 
 done
